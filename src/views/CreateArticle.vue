@@ -86,7 +86,6 @@
               type="textarea"
               placeholder="请输入文章正文，支持 Markdown 格式"
               class="content-editor"
-              :rows="20"
             />
             <div v-if="showPreview" class="content-preview" v-html="previewHtml"></div>
           </div>
@@ -392,6 +391,14 @@ onMounted(() => {
 }
 
 /* 表单样式 */
+.article-form {
+  width: 100% !important;
+}
+
+.article-form :deep(.el-form-item) {
+  width: 100% !important;
+}
+
 .article-form :deep(.el-form-item__label) {
   color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
@@ -438,10 +445,13 @@ onMounted(() => {
 /* 编辑器工具栏 */
 .editor-form-item {
   margin-bottom: 0;
+  width: 100% !important;
 }
 
 .editor-form-item :deep(.el-form-item__content) {
   border: none !important;
+  width: 100% !important;
+  display: block !important;
 }
 
 .editor-form-item :deep(.el-form-item__error) {
@@ -459,6 +469,8 @@ onMounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .editor-toolbar :deep(.el-button) {
@@ -479,6 +491,8 @@ onMounted(() => {
   grid-template-columns: 1fr;
   gap: 0;
   position: relative;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .editor-container.preview-mode {
@@ -488,33 +502,43 @@ onMounted(() => {
 }
 
 .content-editor {
-  width: 100%;
+  width: 100% !important;
+  display: block !important;
+}
+
+.content-editor :deep(.el-input__wrapper) {
+  width: 100% !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
 .content-editor :deep(.el-textarea) {
-  width: 100%;
+  width: 100% !important;
+  display: block !important;
 }
 
 .content-editor :deep(.el-textarea__inner) {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  min-height: 500px;
-  max-height: none;
-  height: 500px;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.8;
-  color: #fff;
-  resize: vertical;
-  box-shadow: none;
-  width: 100%;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-top: none !important;
+  border-radius: 0 0 8px 8px !important;
+  min-height: 500px !important;
+  height: 500px !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+  color: #fff !important;
+  resize: vertical !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  display: block !important;
 }
 
 .content-editor :deep(.el-textarea__inner:focus) {
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: none;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .content-editor :deep(.el-textarea__inner::placeholder) {
@@ -522,10 +546,9 @@ onMounted(() => {
 }
 
 .editor-container.preview-mode .content-editor :deep(.el-textarea__inner) {
-  border-radius: 0 0 0 8px;
-  border-right: none;
-  max-height: none;
-  height: 500px;
+  border-radius: 0 0 0 8px !important;
+  border-right: none !important;
+  height: 500px !important;
 }
 
 .content-preview {
