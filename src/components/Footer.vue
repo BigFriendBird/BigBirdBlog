@@ -8,16 +8,19 @@
 
 <style scoped>
 .footer {
-  background-color: #fff;
-  border-top: 1px solid #eee;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 40px;
 }
 
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px 20px;
   text-align: center;
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
 }
 </style>

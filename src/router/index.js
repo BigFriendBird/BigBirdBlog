@@ -3,6 +3,9 @@ import Home from '../views/Home.vue'
 import ArticleList from '../views/ArticleList.vue'
 import ArticleDetail from '../views/ArticleDetail.vue'
 import About from '../views/About.vue'
+import Register from '../views/Register.vue'
+import Login from '../views/Login.vue'
+import CreateArticle from '../views/CreateArticle.vue'
 
 const routes = [
   {
@@ -24,6 +27,28 @@ const routes = [
     path: '/about',
     name: 'About',
     component: About
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/create-article',
+    name: 'CreateArticle',
+    component: CreateArticle,
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: '/edit-article/:id',
+    name: 'EditArticle',
+    component: CreateArticle,
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 

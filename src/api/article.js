@@ -26,10 +26,10 @@ export const getArticleDetail = (id) => {
   })
 }
 
-// 创建文章
+// 创建文章（需要管理员权限）
 export const createArticle = (data) => {
   return request({
-    url: '/articles',
+    url: '/articles/createArticle',
     method: 'post',
     data
   })
