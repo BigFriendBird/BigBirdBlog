@@ -31,6 +31,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getArticleDetail } from '@/api/article'
 
 const route = useRoute()
 const router = useRouter()
@@ -40,43 +41,20 @@ onMounted(() => {
   loadArticle()
 })
 
-const loadArticle = () => {
+const loadArticle = async () => {
   const articleId = route.params.id
   
-  // 模拟数据
-  article.value = {
-    id: articleId,
-    title: 'Vue 3 开发实践',
-    author: 'BigBird',
-    date: '2026-01-15',
-    views: 256,
-    tags: ['Vue', '前端'],
-    content: `
-      <h2>引言</h2>
-      <p>Vue 3 带来了许多令人兴奋的新特性，包括组合式 API、更好的性能和更小的包体积。</p>
-      
-      <h2>组合式 API</h2>
-      <p>组合式 API 是 Vue 3 中最重要的新特性之一，它提供了一种更灵活的方式来组织组件逻辑。</p>
-      <pre><code>import { ref, onMounted } from 'vue'
-
-export default {
-  setup() {
-    const count = ref(0)
-    
-    onMounted(() => {
-      console.log('组件已挂载')
-    })
-    
-    return { count }
-  }
-}</code></pre>
-
-      <h2>响应式系统</h2>
-      <p>Vue 3 重写了响应式系统，使用 Proxy 替代了 Object.defineProperty，带来了更好的性能和更多的功能。</p>
-
-      <h2>总结</h2>
-      <p>Vue 3 是一个优秀的框架升级，值得每一位 Vue 开发者学习和使用。</p>
-    `
+  try {
+    const res = await getArticleDetail(articleId)
+    if (res.code === 200) {
+      article.value = {
+        ...res.data,
+        date: res.data.createTime ? res.data.createTime.split('T')[0] : '',
+        tags: res.data.tags ? res.data.tags.split(',') : []
+      }
+    }
+  } catch (error) {
+    console.error('获取文章详情失败:', error)
   }
 }
 

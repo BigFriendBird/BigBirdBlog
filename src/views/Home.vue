@@ -33,30 +33,18 @@ const router = useRouter()
 const latestArticles = ref([])
 
 onMounted(async () => {
-  // 模拟数据，实际使用时调用 API
-  latestArticles.value = [
-    {
-      id: 1,
-      title: '欢迎来到 BigBird 博客',
-      summary: '这是博客的第一篇文章，介绍了博客的基本功能和使用方法。',
-      date: '2026-01-16',
-      author: 'BigBird'
-    },
-    {
-      id: 2,
-      title: 'Vue 3 开发实践',
-      summary: '分享 Vue 3 的开发经验和最佳实践。',
-      date: '2026-01-15',
-      author: 'BigBird'
-    },
-    {
-      id: 3,
-      title: 'Spring Boot 微服务架构',
-      summary: '探讨 Spring Boot 在微服务架构中的应用。',
-      date: '2026-01-14',
-      author: 'BigBird'
+  try {
+    const res = await getLatestArticles(3)
+    if (res.code === 200) {
+      latestArticles.value = res.data.map(article => ({
+        ...article,
+        date: article.createTime ? article.createTime.split('T')[0] : '',
+        tags: article.tags ? article.tags.split(',') : []
+      }))
     }
-  ]
+  } catch (error) {
+    console.error('获取文章失败:', error)
+  }
 })
 
 const goToArticle = (id) => {

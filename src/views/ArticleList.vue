@@ -43,6 +43,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getArticleList } from '@/api/article'
 
 const router = useRouter()
 const searchKeyword = ref('')
@@ -55,38 +56,20 @@ onMounted(() => {
   loadArticles()
 })
 
-const loadArticles = () => {
-  // 模拟数据
-  articles.value = [
-    {
-      id: 1,
-      title: '欢迎来到 BigBird 博客',
-      summary: '这是博客的第一篇文章，介绍了博客的基本功能和使用方法。',
-      author: 'BigBird',
-      date: '2026-01-16',
-      views: 128,
-      tags: ['博客', '介绍']
-    },
-    {
-      id: 2,
-      title: 'Vue 3 开发实践',
-      summary: '分享 Vue 3 的开发经验和最佳实践，包括组合式 API、响应式系统等。',
-      author: 'BigBird',
-      date: '2026-01-15',
-      views: 256,
-      tags: ['Vue', '前端']
-    },
-    {
-      id: 3,
-      title: 'Spring Boot 微服务架构',
-      summary: '探讨 Spring Boot 在微服务架构中的应用，包括服务注册、配置中心等。',
-      author: 'BigBird',
-      date: '2026-01-14',
-      views: 189,
-      tags: ['Spring Boot', '后端', '微服务']
+const loadArticles = async () => {
+  try {
+    const res = await getArticleList(currentPage.value, pageSize.value, searchKeyword.value)
+    if (res.code === 200) {
+      articles.value = res.data.records.map(article => ({
+        ...article,
+        date: article.createTime ? article.createTime.split('T')[0] : '',
+        tags: article.tags ? article.tags.split(',') : []
+      }))
+      total.value = res.data.total
     }
-  ]
-  total.value = articles.value.length
+  } catch (error) {
+    console.error('获取文章列表失败:', error)
+  }
 }
 
 const handleSearch = () => {
