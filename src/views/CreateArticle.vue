@@ -251,13 +251,18 @@ const handlePublish = async () => {
 
     if (res.code === 200) {
       ElMessage.success(isEdit.value ? '文章更新成功！' : '文章发布成功！')
+      // 清除草稿
+      localStorage.removeItem('article_draft')
       setTimeout(() => {
         router.push(`/article/${res.data.id || route.params.id}`)
       }, 1000)
+    } else {
+      ElMessage.error(res.message || '发布失败，请重试')
     }
   } catch (error) {
     if (error !== false) {
       console.error('发布失败:', error)
+      ElMessage.error(error.message || '发布失败，请重试')
     }
   } finally {
     publishing.value = false

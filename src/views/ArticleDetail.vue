@@ -96,16 +96,6 @@
                 
                 <div class="comment-footer">
                   <button 
-                    class="comment-action-btn" 
-                    :class="{ active: comment.liked }"
-                    @click="handleLike(comment)"
-                  >
-                    <el-icon><Star /></el-icon>
-                    <span>{{ comment.liked ? '已赞' : '点赞' }}</span>
-                    <span v-if="comment.likes > 0">({{ comment.likes }})</span>
-                  </button>
-                  
-                  <button 
                     v-if="isLoggedIn"
                     class="comment-action-btn" 
                     @click="handleReply(comment)"
@@ -166,7 +156,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getArticleDetail } from '@/api/article'
 import { getArticleComments, addComment, deleteComment } from '@/api/comment'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Lock, ChatLineSquare, Star, Delete, Back, Edit } from '@element-plus/icons-vue'
+import { Lock, ChatLineSquare, Delete, Back, Edit } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -305,24 +295,6 @@ const handleSubmitReply = async (parentComment) => {
   }
 }
 
-// 点赞评论
-const handleLike = (comment) => {
-  const likedKey = `comment_liked_${comment.id}`
-  const hasLiked = localStorage.getItem(likedKey)
-  
-  if (hasLiked) {
-    comment.liked = false
-    comment.likes = Math.max(0, comment.likes - 1)
-    localStorage.removeItem(likedKey)
-    ElMessage.success('已取消点赞')
-  } else {
-    comment.liked = true
-    comment.likes = (comment.likes || 0) + 1
-    localStorage.setItem(likedKey, 'true')
-    ElMessage.success('点赞成功')
-  }
-}
-
 // 删除评论
 const handleDeleteComment = async (comment) => {
   try {
@@ -393,10 +365,27 @@ const loadComments = async () => {
     loadingComments.value = true
     const res = await getArticleComments(articleId)
     if (res.code === 200) {
-      // 转换评论数据格式并添加点赞状态
-      comments.value = res.data.map(comment => {
-        const likedKey = `comment_liked_${comment.id}`
-        const hasLiked = localStorage.getItem(likedKey)
+      // 转换评论数据格式
+      const rawComments = res.data
+      
+      // 创建一个 Map 方便查找父评论
+      const commentMap = new Map()
+      rawComments.forEach(c => {
+        commentMap.set(c.id, c)
+      })
+      
+      comments.value = rawComments.map(comment => {
+        // 如果有父评论ID，查找父评论信息
+        let parentContent = ''
+        let parentAuthor = ''
+        
+        if (comment.parentId) {
+          const parentComment = commentMap.get(comment.parentId)
+          if (parentComment) {
+            parentContent = parentComment.content
+            parentAuthor = parentComment.nickname || '匿名用户'
+          }
+        }
         
         return {
           id: comment.id,
@@ -405,11 +394,9 @@ const loadComments = async () => {
           avatar: comment.avatar || 'https://via.placeholder.com/40',
           content: comment.content,
           createTime: comment.createTime,
-          likes: 0, // 后端如果有点赞数可以使用 comment.likes
-          liked: !!hasLiked,
           parentId: comment.parentId,
-          parentContent: comment.parentContent || '',
-          parentAuthor: comment.parentAuthor || ''
+          parentContent: parentContent,
+          parentAuthor: parentAuthor
         }
       })
     }
